@@ -12,7 +12,6 @@ Tools::~Tools() {}
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations, const vector<VectorXd> &ground_truth) {
 	VectorXd rmse(4);
 	rmse << 0, 0, 0, 0;
-
 	if(estimations.size() != ground_truth.size())
 		std::cout << "sizes dont match for rmse calculations" << std::endl;
 
@@ -24,15 +23,16 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations, const vector<
 
 	rmse /= estimations.size();
 	rmse = rmse.array().sqrt();
+
 	return rmse;
 
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
-	double px = x_state[0];
-	double py = x_state[1];
-	double vx = x_state[2];
-	double vy = x_state[3];
+	double px = x_state(0);
+	double py = x_state(1);
+	double vx = x_state(2);
+	double vy = x_state(3);
 
 	if(fabs(px) < 0.0001){
 	px = 0.0001;
