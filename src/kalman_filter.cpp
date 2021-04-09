@@ -36,13 +36,12 @@ void KalmanFilter::Predict() {
 // LiDAR
 void KalmanFilter::Update(const VectorXd &z) {
   VectorXd z_new = H_*x_;
-  VectorXd y = z - H_*x_;
+  VectorXd y = z - z_new;
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_*P_*Ht + R_;
   MatrixXd S_inv = S.inverse();
   MatrixXd K = P_*Ht*S_inv;
   MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
-  std::cout << "all g from lidar" << std::endl;
   P_ = (I-K*H_)*P_;
   x_ += K*y;
 }
@@ -64,12 +63,12 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd H = VectorXd(3);
   H << rho, theta, rho_dot;
   VectorXd y = z - H;
+  y(1) = atan2(sin(y(1)), cos(y(1)));
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_*P_*Ht + R_;
   MatrixXd S_inv = S.inverse();
   MatrixXd K = P_*Ht*S_inv;
   MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
-  std::cout << "all g from radar" << std::endl;
   P_ = (I-K*H_)*P_;
   x_ += K*y;
 }
