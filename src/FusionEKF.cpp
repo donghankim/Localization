@@ -61,25 +61,39 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     }
     previous_timestamp_ = measurement_pack.timestamp_;
+
+    // Init P,F and Q
+    MatrixXd P(4,4);
+    P << 1, 0, 0, 0,
+         0, 1, 0, 0,
+         0, 0, 1000, 0,
+         0, 0, 0, 1000;
+    ekf_.P_ = P;
+
+    MatrixXd F(4,4);
+    F << 1, 0, 0, 0,
+         0, 1, 0, 0,
+         0, 0, 1, 0,
+         0, 0, 0, 1;
+    //ekf_.F_ = F;
+
+    MatrixXd Q(4,4);
+    //ekf_.Q_ = Q;
+    
     is_initialized_ = true;
     return;
+    
   }
 
   // state prediction
   ekf_.F_ = MatrixXd(4,4);
   ekf_.Q_ = MatrixXd(4,4);
-  ekf_.P_ = MatrixXd(4,4);
   float noise_ax = 9;
   float noise_ay = 9;
   float dt = (measurement_pack.timestamp_ - previous_timestamp_)/1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
   
-  if(dt > 0){
-    ekf_.P_ << 1, 0, 0, 0,
-              0, 1, 0, 0,
-              0, 0, 1000, 0,
-              0, 0, 0, 1000;
-    
+  if(dt > 0){    
     ekf_.F_ << 1, 0 ,dt, 0,
               0, 1, 0, dt,
               0, 0, 1, 0,
