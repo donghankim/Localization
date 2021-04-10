@@ -45,12 +45,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float phi = measurement_pack.raw_measurements_(1);
       float rho_dot = measurement_pack.raw_measurements_(2);
 
-      while(phi > M_PI)
-        phi -= 2.0*M_PI;
-
-      while(phi < -M_PI)
-        phi += 2.0*M_PI;
-    
       // converting to polar
       float x = rho*cos(phi);
       float y = rho*sin(phi);
@@ -63,7 +57,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       float x = measurement_pack.raw_measurements_(0);
       float y = measurement_pack.raw_measurements_(1);
-      ekf_.x_ << x, y, 0, 0;
+      ekf_.x_ << x, y, 1.f, 1.f;
 
     }
     previous_timestamp_ = measurement_pack.timestamp_;
@@ -80,17 +74,24 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   float dt = (measurement_pack.timestamp_ - previous_timestamp_)/1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
   
-  ekf_.F_ << 1, 0 ,dt, 0,
-             0, 1, 0, dt,
-             0, 0, 1, 0,
-             0, 0, 0, 1;
+  if(dt > 0){
+    ekf_.P_ << 1, 0, 0, 0,
+              0, 1, 0, 0,
+              0, 0, 1000, 0,
+              0, 0, 0, 1000;
+    
+    ekf_.F_ << 1, 0 ,dt, 0,
+              0, 1, 0, dt,
+              0, 0, 1, 0,
+              0, 0, 0, 1;
 
-  ekf_.Q_ << (pow(dt, 4)/4)*noise_ax, 0, (pow(dt, 3)/2)*noise_ax, 0,
-             0, (pow(dt, 4)/4)*noise_ay, 0, (pow(dt, 3)/2)*noise_ay,
-             (pow(dt, 3)/2)*noise_ax, 0, pow(dt, 2)*noise_ax, 0,
-             0, (pow(dt, 3)/2)*noise_ay, 0, pow(dt, 2)*noise_ay;   
-  
-  ekf_.Predict();
+    ekf_.Q_ << (pow(dt, 4)/4)*noise_ax, 0, (pow(dt, 3)/2)*noise_ax, 0,
+              0, (pow(dt, 4)/4)*noise_ay, 0, (pow(dt, 3)/2)*noise_ay,
+              (pow(dt, 3)/2)*noise_ax, 0, pow(dt, 2)*noise_ax, 0,
+              0, (pow(dt, 3)/2)*noise_ay, 0, pow(dt, 2)*noise_ay;   
+    
+    ekf_.Predict();
+  }
 
   // measurement update
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
