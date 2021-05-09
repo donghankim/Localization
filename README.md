@@ -27,8 +27,3 @@ chmod +x build.sh & ./build.sh
 chmod +x run.sh & ./run.sh
 ```
 Keep in mind that you only need to change access permissions (chmod) once. Some systems may not even require it. Also do not change the contents of CMakeList.txt (unless you know what you're doing).
-
-## Kalman Filter
-
-
-## Particle Filter

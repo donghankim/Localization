@@ -2,7 +2,7 @@
  * particle_filter.cpp
  *
  * Created on: Dec 12, 2016
- * Author: Tiffany Huang
+ * Author: Tiffany Huang -> editted by Donghan Kim
  */
 
 #include "particle_filter.h"
@@ -54,7 +54,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	std::normal_distribution<double> dist_theta(0, std_pos[2]);
 
 	for(int i = 0; i < num_particles; i++){
-		// try < 0 
+		// try < 0
 		if(fabs(yaw_rate) < 0.000001){
 			particles[i].x += velocity*delta_t*cos(particles[i].theta);
 			particles[i].y += velocity*delta_t*sin(particles[i].theta);
@@ -63,7 +63,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 			particles[i].y += velocity/yaw_rate*(cos(particles[i].theta) - cos(particles[i].theta + yaw_rate*delta_t));
 			particles[i].theta += yaw_rate * delta_t;
 		}
-		
+
 		particles[i].x += dist_x(rn_gen);
 		particles[i].y += dist_y(rn_gen);
 		particles[i].theta += dist_theta(rn_gen);
@@ -172,11 +172,11 @@ void ParticleFilter::resample() {
 	particles = resampled_particles;
 }
 
-void ParticleFilter::SetAssociations(Particle& particle, 
-                                     const vector<int>& associations, 
-                                     const vector<double>& sense_x, 
+void ParticleFilter::SetAssociations(Particle& particle,
+                                     const vector<int>& associations,
+                                     const vector<double>& sense_x,
                                      const vector<double>& sense_y) {
-  // particle: the particle to which assign each listed association, 
+  // particle: the particle to which assign each listed association,
   //   and association's (x,y) world coordinates mapping
   // associations: The landmark id that goes along with each listed association
   // sense_x: the associations x mapping already converted to world coordinates
