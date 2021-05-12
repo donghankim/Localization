@@ -27,3 +27,24 @@ chmod +x build.sh & ./build.sh
 chmod +x run.sh & ./run.sh
 ```
 Keep in mind that you only need to change access permissions (chmod) once. Some systems may not even require it. Also do not change the contents of CMakeList.txt (unless you know what you're doing).
+
+## Kalman Filter
+GIF Image
+
+When dealing with Kalman filters, almost <i>everything</i> is represented using probabilities. Therefore, if you dont have a good understanding of conditional proabilities, as well as Bayes rule then I recommend you study those conecepts before continuing. In order to localize (or estimate) the position of some agent, we use two probability density functions and a map of the world the agent is in. The first pdf is often called our measurement pdf and the second is called our estimate pdf. Essentially the measurement pdf comes from our sensors (LiDAR and/or RADAR) and our estimate pdf comes from our motion model. To explain these concepts, I will use a simple example of a car can that only go left or right on a line (this line is the map for our car).
+
+### Initialization
+We first need some kind of estimate of where our car is on this line. This initial estimate will obviosuly be inaccurate. For real self-driving cars, this estimate can be done using data from the GPS. In our example, we will assume our car has an initial state of 10m and is moving with a constant velocity of 1m/s. I used the term "state" here and this is an important term that is used very often. The state of an agent is simply a vector that define the cars position in our map. In a 3D world, our state vector for our agent will be quiet large. If we have IMU input, then our state will contain the yaw, roll and pitch values for each time step along with other information. However, for the sake of simplicity, out state vector will only contain 2 values, x (position) and v (speed). In this first time step, our state vector is a 2x1 vector containing the value 10 and 1.
+
+### State Update (prediction)
+For Extended Kalman filters, we use a more complext motion model. However, in our example, out motion model is linear. This means the velocity of our agent is constant and we dont take into account acceleration. Since at initilization, we assumed the agent is moving at 1m/s, we can estimate the position of our agent at time step 2. It will be at x = 11 (since 10 + 1 = 11). On a pdf, this will be a Gaussian distribution with u = 11 and var = var_(t-1) + var_motion. Var_motion is the variance from the motion itself. This exists because the control input (motion input) is not always 100% accurate.
+
+<img src="media/state_update.png"
+     alt="state update equations."
+     style="text-align:center" />
+
+X is our state vector. A is our state transition matrix, and B is our motion model vector which contains two linear equations that represent how displacement and velocity changes should take place. Finallly, u is our control input vector. In our example, this will simply be a 1x1 vector containing the value 1.
+
+The P vector represents our error from prediction. Since both the measurements and control input contains small errors, we need to specify our error from prediction. The P matrix is therefore a covariance matrix of our state vectors. Since in our example, our state vector is a 2x1 vector, our covariance matrix P will simply be a 2x2 square matrix containing the variance of each state parameter.
+
+
