@@ -45,6 +45,24 @@ For Extended Kalman filters, we use a more complext motion model. However, in ou
 
 X is our state vector. A is our state transition matrix, and B is our motion model vector which contains two linear equations that represent how displacement and velocity changes should take place. Finallly, u is our control input vector. In our example, this will simply be a 1x1 vector containing the value 1.
 
-The P vector represents our error from prediction. Since both the measurements and control input contains small errors, we need to specify our error from prediction. The P matrix is therefore a covariance matrix of our state vectors. Since in our example, our state vector is a 2x1 vector, our covariance matrix P will simply be a 2x2 square matrix containing the variance of each state parameter.
+<img src="media/est_error.png"
+     alt="state estimation error."
+     style="text-align:center" />
+
+The P vector represents our error from prediction. Since both the measurements and control input contains small errors, we need to specify our error from prediction. The P matrix is therefore a covariance matrix of our state vectors. Since in our example, our state vector is a 2x1 vector, our covariance matrix P will simply be a 2x2 square matrix containing the variance of each state parameter. The Q matrix is the process noise covariance matrix
+
+### Kalman Gain
+Kalman gain is probably one of the most important components of Kalman filters. We have established that there exists errors in recieving control input and the state update process which we denoted with matrix P. There are also errors from reading in measurements. LiDAR and RADAR sensors will produce a certain amount of error as well. However, certain times the measurement error may be greater than the state prediction error (matrix P). Other times, the state prediction error may be less than the measurement error. Because of this uncertainty, we use the Kalman gain to decide on which calculation to rely on. Kalman gain is always between 0 and 1. If the Kalman gain is close to 0, then our state predictions are more accurate than our meassurements, and if our gain is closer to 1 then our measurements are more accurate than our predictions. Based on this value, we can update the location of our agent.
+
+<img src="media/kalman_gain.png"
+     alt="Kalman gain eqaution."
+     style="text-align:center" />
+
+### Measurement Update
+
+### Extended Kalman Filter
+
+## Particle Filters
+
 
 
