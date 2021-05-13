@@ -59,8 +59,19 @@ Kalman gain is probably one of the most important components of Kalman filters. 
      style="text-align:center" />
 
 ### Measurement Update
+Once we have calculated the Kalman gain, we can now update our state vector. The first step is to calculate the measurment error which is denoted as y_t in the equation below. The y^(m)_(t) vector is simply a vector containing all of our measurements, while the C matrix is a matrix that transforms our measurements. Lastly, Z^m is the error vector associated with the measurements. We can now update our location estimate and our current state vector error.
 
-### Extended Kalman Filter
+<img src="media/y_equation.png"
+     alt="measurement equation"
+     style="text-align:center" />
+
+Updating the state vector and its estimation error is trivial. The only matrix we havent seen from the following eqautions is our H matrix. This matrix is the matrix that transforms our current state vector into the space of our measurement vector.
+
+<img src="media/update_equations.png"
+     alt="measurement equation"
+     style="text-align:center" />
+
+
 
 ## Particle Filters
 
