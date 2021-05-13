@@ -29,7 +29,10 @@ chmod +x run.sh & ./run.sh
 Keep in mind that you only need to change access permissions (chmod) once. Some systems may not even require it. Also do not change the contents of CMakeList.txt (unless you know what you're doing).
 
 ## Kalman Filter
-GIF Image
+
+<div align="center">
+<img src="media/kf.gif" >
+</div>
 
 When dealing with Kalman filters, almost <i>everything</i> is represented using probabilities. Therefore, if you dont have a good understanding of conditional proabilities, as well as Bayes rule then I recommend you study those conecepts before continuing. In order to localize (or estimate) the position of some agent, we use two probability density functions and a map of the world the agent is in. The first pdf is often called our measurement pdf and the second is called our estimate pdf. Essentially the measurement pdf comes from our sensors (LiDAR and/or RADAR) and our estimate pdf comes from our motion model. To explain these concepts, I will use a simple example of a car can that only go left or right on a line (this line is the map for our car).
 
@@ -67,10 +70,7 @@ Once we have calculated the Kalman gain, we can now update our state vector. The
 
 Updating the state vector and its estimation error is trivial. The only matrix we havent seen from the following eqautions is our H matrix. This matrix is the matrix that transforms our current state vector into the space of our measurement vector.
 
-<img src="media/update_equations.png"
-     alt="measurement equation"
-     style="text-align:center" />
-
+![update equations](media/update_equations.png#center)
 
 
 ## Particle Filters
