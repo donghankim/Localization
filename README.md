@@ -42,38 +42,40 @@ We first need some kind of estimate of where our car is on this line. This initi
 ### State Update (prediction)
 For Extended Kalman filters, we use a more complext motion model. However, in our example, out motion model is linear. This means the velocity of our agent is constant and we dont take into account acceleration. Since at initilization, we assumed the agent is moving at 1m/s, we can estimate the position of our agent at time step 2. It will be at x = 11 (since 10 + 1 = 11). On a pdf, this will be a Gaussian distribution with u = 11 and var = var_(t-1) + var_motion. Var_motion is the variance from the motion itself. This exists because the control input (motion input) is not always 100% accurate.
 
-<img src="media/state_update.png"
-     alt="state update equations."
-     style="text-align:center" />
+<div align="center">
+<img src="media/state_update.png" />
+</div>
 
 X is our state vector. A is our state transition matrix, and B is our motion model vector which contains two linear equations that represent how displacement and velocity changes should take place. Finallly, u is our control input vector. In our example, this will simply be a 1x1 vector containing the value 1.
 
-<img src="media/est_error.png"
-     alt="state estimation error."
-     style="text-align:center" />
+<div align="center">
+<img src="media/est_error.png" />
+</div>
 
 The P vector represents our error from prediction. Since both the measurements and control input contains small errors, we need to specify our error from prediction. The P matrix is therefore a covariance matrix of our state vectors. Since in our example, our state vector is a 2x1 vector, our covariance matrix P will simply be a 2x2 square matrix containing the variance of each state parameter. The Q matrix is the process noise covariance matrix
 
 ### Kalman Gain
 Kalman gain is probably one of the most important components of Kalman filters. We have established that there exists errors in recieving control input and the state update process which we denoted with matrix P. There are also errors from reading in measurements. LiDAR and RADAR sensors will produce a certain amount of error as well. However, certain times the measurement error may be greater than the state prediction error (matrix P). Other times, the state prediction error may be less than the measurement error. Because of this uncertainty, we use the Kalman gain to decide on which calculation to rely on. Kalman gain is always between 0 and 1. If the Kalman gain is close to 0, then our state predictions are more accurate than our meassurements, and if our gain is closer to 1 then our measurements are more accurate than our predictions. Based on this value, we can update the location of our agent.
 
-<img src="media/kalman_gain.png"
-     alt="Kalman gain eqaution."
-     style="text-align:center" />
+<img src="media/kalman_gain.png" />
 
 ### Measurement Update
 Once we have calculated the Kalman gain, we can now update our state vector. The first step is to calculate the measurment error which is denoted as y_t in the equation below. The y^(m)_(t) vector is simply a vector containing all of our measurements, while the C matrix is a matrix that transforms our measurements. Lastly, Z^m is the error vector associated with the measurements. We can now update our location estimate and our current state vector error.
 
-<img src="media/y_equation.png"
-     alt="measurement equation"
-     style="text-align:center" />
+<div align="center">
+<img src="media/y_equation.png" />
+</div>
 
 Updating the state vector and its estimation error is trivial. The only matrix we havent seen from the following eqautions is our H matrix. This matrix is the matrix that transforms our current state vector into the space of our measurement vector.
 
-![update equations](media/update_equations.png#center)
-
+<div align="center">
+<img src="media/update_equations.png" />
+</div>
 
 ## Particle Filters
+<div align="center">
+<img src="media/pf.gif" >
+</div>
 
 
 
