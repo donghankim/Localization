@@ -57,7 +57,9 @@ The P vector represents our error from prediction. Since both the measurements a
 ### Kalman Gain
 Kalman gain is probably one of the most important components of Kalman filters. We have established that there exists errors in recieving control input and the state update process which we denoted with matrix P. There are also errors from reading in measurements. LiDAR and RADAR sensors will produce a certain amount of error as well. However, certain times the measurement error may be greater than the state prediction error (matrix P). Other times, the state prediction error may be less than the measurement error. Because of this uncertainty, we use the Kalman gain to decide on which calculation to rely on. Kalman gain is always between 0 and 1. If the Kalman gain is close to 0, then our state predictions are more accurate than our meassurements, and if our gain is closer to 1 then our measurements are more accurate than our predictions. Based on this value, we can update the location of our agent.
 
+<div align="center">
 <img src="media/kalman_gain.png" />
+</div>
 
 ### Measurement Update
 Once we have calculated the Kalman gain, we can now update our state vector. The first step is to calculate the measurment error which is denoted as y_t in the equation below. The y^(m)_(t) vector is simply a vector containing all of our measurements, while the C matrix is a matrix that transforms our measurements. Lastly, Z^m is the error vector associated with the measurements. We can now update our location estimate and our current state vector error.
@@ -77,5 +79,5 @@ Updating the state vector and its estimation error is trivial. The only matrix w
 <img src="media/pf.gif" >
 </div>
 
-
+Like the Kalman filter, the partcile filter is also a localization algorithm. Therefore, it follows the same recursive process of prediction and measurement update. However, unlike the Kalman filter, the particle filter also has an additional step called resampling. The main difference between the two algorithms is the fact that particle filters
 
