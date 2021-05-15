@@ -79,5 +79,32 @@ Updating the state vector and its estimation error is trivial. The only matrix w
 <img src="media/pf.gif" >
 </div>
 
-Like the Kalman filter, the partcile filter is also a localization algorithm. Therefore, it follows the same recursive process of prediction and measurement update. However, unlike the Kalman filter, the particle filter also has an additional step called resampling. The main difference between the two algorithms is the fact that particle filters
+Like the Kalman filter, the particle filter is also a localization algorithm. Therefore, it follows the same recursive process of prediction and measurement update. However, unlike the Kalman filter, the particle filter also has an additional step called resampling. The main difference between the two algorithms is the fact that particle filters can be used to localiza an agent that follows a non-linear model. The previous example above, we have used a linear model for state predictions. However, in particle filters this is not the case. Similar to the Kalman filter, we also need to define a global map and landmarks associated with that map. 
+
+### Initialization
+Similar to the Kalman filter, the initial guess of the agents location is done using GPS. Then N "partciles" are sampled from a normal distribution where the mean is the location provided by our GPS and the standard deviation is provided by the manufacture specification. The number of particles sampled presents a trade-off. The more particles we sample, the more accurate our model will be. However, this will increase the execution time for each cycle. N = 100 is not a bad place to start. 
+
+### State Update (prediction)
+Each particle represents a potential location of the agent. Whenever we recieve a control input (such as brake, accelerate and/or steering input) these particles are displaced using a kinematic model (equations below). 
+
+<div align="center">
+<img src="media/kinematic_model.png" >
+</div>
+
+We also add process noise like we did in Kalman filter.
+
+### Measurement Update
+For every time step we will recieve measurements from our LiDAR or RADAR sensor. We can transform our particles coordinates that are defined in our car space to the world space in which our map and landmarks are. For each partcile within range of our landmark, we can calculate the similartity between the sensor measurements and the particle themselves. This similarity is represented as a probability that is derived from a multi-variate Gaussian distribution. The actual eqautions for this can be found online. This probability is called the weight of the partcile. Particles with a higher weight obviously imply a higher probability of the agents current location. As an example, refer to the image below:
+
+<div align="center">
+<img src="media/particle_example.png" >
+</div>
+
+In this example we have 4 partciles and four landmarks. Whenever we recieve sensor information, we can compare the relative positions of our particles and our measurements. As a result, each partcile will be associated with a weight value that signifies the likelihood of that partcile being the current agents location.
+
+### Resampling
+Since there is always a lot of noise, we cant just take the particle with the highest weight to be our current location. Instead we sample the particles based on their weight with replacement. Therefore, partciles with higher weights will be sampled more often than partciles with smaller weights. The mean of our resampled partciles now represents our current location of our agent. 
+
+## Disclaimer
+While all the explanations in this readme are written in my own words, the eqautions and diagrams I have used in this readme (the pictures basically) are from various source on the internet. The code I have provided was also written by me, but a skeleton base was provided by Udacity.
 
